@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="share/common"></div>
+</head>
+<body class="body-common">
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="id" th:value="${pro_paper.id }" />
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" id="name" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入名称" class="layui-input" th:value="${pro_paper.name}" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">发表时间</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pubtime" id="pubtime" autocomplete="off" class="layui-input" lay-verify="required"
+                               th:value="${pro_paper.pubtime_}">
+                    </div>
+                </div>
+
+        <div class="layui-upload">
+            <button type="button" class="layui-btn" id="upload_attach_btn">上传附件</button>
+        </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">附件ID</label>
+                <div class="layui-input-block">
+                    <input type="number" name="attachid" id="attachid" disabled maxlength="19" lay-verify="number" autocomplete="off"
+                           placeholder="请输入附件ID" class="layui-input" th:value="${pro_paper.attachid}" >
+                </div>
+            </div>
+
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">指导老师</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="teachername" id="teachername" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入指导老师" class="layui-input" th:value="${pro_paper.teachername}" >
+                    </div>
+                </div>
+            <!--<div class="layui-form-item">-->
+                <!--<label class="layui-form-label">学生ID</label>-->
+                <!--<div class="layui-input-block">-->
+                    <!--<input type="number" name="userId" id="userId" maxlength="19" lay-verify="number" autocomplete="off"-->
+                           <!--placeholder="请输入学生ID" class="layui-input" th:value="${pro_paper.userId}" >-->
+                <!--</div>-->
+            <!--</div>-->
+
+        <div class="layui-form-item" pane="">
+            <label class="layui-form-label">请选择学生</label>
+            <div class="layui-input-block">
+
+                <select name="userId" id="userId">
+                    <option value="">请选择学生</option>
+                    <option th:value="${u.id}" th:each="u:${users}" th:selected="${pro_paper.userId==u.id}" th:text="${u.truename}"></option>
+                    <!--<option value="1" th:selected="${pro_item.itype==1}">支出</option>-->
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item" style="text-align: center">
+            <span th:if="${session.userAuth==null || #maps.containsKey(session.userAuth,'proPaper/save')}">
+            <button class="layui-btn" lay-submit="" lay-filter="save-data">提交</button>
+            </span>
+            <input type="button" class="layui-btn"  onclick="myback()" value="返回" />
+        </div>
+    </form>
+</div>
+<!--
+<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>-->
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['form', 'layedit', 'laydate', 'upload'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , upload = layui.upload
+                , laydate = layui.laydate;
+        form.render();
+
+
+           laydate.render({
+               elem: '#pubtime'
+               , type: 'datetime'
+           });
+
+        //自定义验证规则
+        form.verify({});
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#upload_attach_btn'
+            ,url: '/api/common/upload'
+            ,exts:"jpg|jpeg|doc|docx|xls|xlsx|pdf"
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                console.log(res);
+                //如果上传失败
+                if(res.result == "0"){
+                    $("#attachid").val(res.data.id);
+                    return layer.msg('上传成功');
+                }
+                //上传成功
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                // var demoText = $('#demoText');
+                // demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+                // demoText.find('.demo-reload').on('click', function(){
+                //     uploadInst.upload();
+                // });
+            }
+        });
+        //监听提交
+        form.on('submit(save-data)', function (data) {
+            $.post(rootPath+"proPaper/save",data.field,function (data) {
+                if(data.code==0){
+                    myAlert("保存成功");
+                    setTimeout(function () {
+                        myback("proPaper/gotoList");
+                    },alertTime)
+                }else{
+                    myAlert("保存失败->"+data.message)
+                }
+            });
+            return false
+        });
+
+    });
+</script>
+
+</body>
+</html>

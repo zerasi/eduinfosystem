@@ -1,0 +1,49 @@
+
+
+<link rel="stylesheet" type="text/css" href="/static/admin/layui/css/layui.css"/>
+<link rel="stylesheet" type="text/css" href="/static/admin/css/admin.css"/>
+
+
+<script src="/static/admin/js/jquery-3.2.1.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/admin/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/admin/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/admin/js/common.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    alertTime = 500;
+    rootPath = "/";
+    function myback() {
+        history.back(-1);
+    }
+    layui.use(['form', 'table', 'laydate', 'layer'], function () {
+        var layer = layui.layer;
+        myAlert = function (msg) {
+            layer.alert(msg);
+        }
+        myConfirm = function (msg,callback) {
+            layer.confirm(msg, {
+                btn: ['确定', '取消'] //可以无限个按钮
+                ,btn1: function(index, layero){
+                    //按钮【按钮三】的回调
+                    console.log("confirm")
+                    callback();
+                    layer.close(index);
+                }
+            }, function(index, layero){
+                //按钮【按钮一】的回调
+                console.log("confirm1343")
+                callback();
+                layer.close(index);
+            }, function(index){
+                //按钮【按钮二】的回调
+            });
+        }
+    })
+    // function myAlert(msg) {
+    //     alert(msg);
+    // }
+
+    // function myConfirm(msg,calback){
+    //     calback();
+    // }
+</script>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="renderer" content="webkit">
+  		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title>网站后台管理模版</title>
+		<link rel="stylesheet" type="text/css" href="../../static/admin/layui/css/layui.css"/>
+		<link rel="stylesheet" type="text/css" href="../../static/admin/css/admin.css"/>
+	</head>
+	<body>
+		<div class="wrap-container welcome-container">
+			<blockquote class="layui-elem-quote">
+				<form id="qwe" class="layui-form">
+					<div class="layui-form-item">
+
+						<div class="layui-form-item layui-inline">
+							<label class="layui-form-label" style="width:120px !important;">选择统计类型</label>
+							<div class="layui-input-block" style="width:600px !important;">
+								<input type="radio" name="itype" value="0" title="本月数据" checked="">
+								<input type="radio" name="itype" value="1" title="本年数据">
+								<!--<input type="radio" name="itype" value="2" title="本年数据">-->
+							</div>
+						</div>
+							<div class="layui-inline">
+								<input  class="layui-btn" lay-submit="" lay-filter="queryCondition" id="queryCondition" name=""  data-type="reload"
+										value="统计"/>
+							</div>
+
+
+					</div>
+				</form>
+			</blockquote>
+			<div class="row">
+				<div class="welcome-left-container col-lg-9">
+
+					<!--图表-->
+					<div class="chart-panel panel panel-default">
+						<div class="panel-body" id="chart" style="height: 376px;">
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<script src="../../static/admin/layui/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../static/admin/lib/echarts/echarts.js"></script>
+		<script type="text/javascript">
+			layui.use(['layer','jquery','laydate','layedit','form'], function(){
+				var layer 	= layui.layer;
+				var $=layui.jquery;
+				//图表
+				var myChart;
+				require.config({
+				    paths: {
+				        echarts: '../../static/admin/lib/echarts'
+				    }
+				});
+				var initMychart = function(data){
+                    require(
+                        [
+                            'echarts',
+                            'echarts/chart/bar',
+                            'echarts/chart/line',
+                            'echarts/chart/map'
+                        ],
+                        function (ec) {
+                            //--- 折柱 ---
+                            myChart = ec.init(document.getElementById('chart'));
+                            myChart.setOption(
+                                data
+                            );
+                        }
+                    );
+				}
+
+				$(window).resize(function(){
+					myChart.resize();
+				})
+
+                /*初始化日期选择框 begin*/
+                var laydate = layui.laydate;
+
+                var form = layui.form;
+                //监听提交
+                form.on('submit(queryCondition)', function(data){
+                    // layer.alert(JSON.stringify(data.field), {
+                    //     title: '最终的提交信息'
+                    // })
+					var sd = data.field;
+					$.get("/proItem/chartData",data.field,function (jd) {
+						console.log(jd);
+						var d = jd.data;
+						var x = [],y = [];
+						var sum = 0;
+						var N = sd.itype == "0" ? 30:12;
+						for(var i=0;i<d.length;i++){
+						    var item = d[i];
+						    var oi = item.occurtime;
+						    var number = item.number;
+						    sum += parseFloat(number);
+						    x.push(oi);
+						    y.push(number);
+						}
+						var avi = parseFloat(sum) / N;
+
+						var data = {
+                            title: {
+                                text: "总支出："+sum.toFixed(2),
+                                subtext:'平均支出：' + avi.toFixed(2),
+                                textStyle: {
+                                    color: "rgb(85, 85, 85)",
+                                    fontSize: 18,
+                                    fontStyle: "normal",
+                                    fontWeight: "normal"
+                                }
+                            },
+							subtitle:{
+                                text:"123"
+							},
+                            tooltip: {
+                                trigger: "axis"
+                            },
+                            legend: {
+                                data: ["支出"],//, "支出", "净收入"],
+                                selectedMode: false,
+                            },
+                            toolbox: {
+                                show: true,
+                                feature: {
+                                    dataView: {
+                                        show: false,
+                                        readOnly: true
+                                    },
+                                    magicType: {
+                                        show: false,
+                                        type: ["line", "bar", "stack", "tiled"]
+                                    },
+                                    restore: {
+                                        show: true
+                                    },
+                                    saveAsImage: {
+                                        show: true
+                                    },
+                                    mark: {
+                                        show: false
+                                    }
+                                }
+                            },
+                            calculable: false,
+                            xAxis: [
+                                {
+                                    type: "category",
+                                    boundaryGap: false,
+                                    data: x
+                                }
+                            ],
+                            yAxis: [
+                                {
+                                    type: "value"
+                                }
+                            ],
+                            grid: {
+                                x2: 30,
+                                x: 50
+                            },
+                            series: [
+                                // {
+                                //     name: "收入",
+                                //     type: "line",
+                                //     smooth: true,
+                                //     itemStyle: {
+                                //         normal: {
+                                //             areaStyle: {
+                                //                 type: "default"
+                                //             }
+                                //         }
+                                //     },
+                                //     data: y1
+                                // },
+                                {
+                                    name: "支出",
+                                    type: "line",
+                                    smooth: true,
+                                    itemStyle: {
+                                        normal: {
+                                            areaStyle: {
+                                                type: "default"
+                                            }
+                                        }
+                                    },
+                                    data: y
+                                },
+                                // {
+                                //     name: "净收入",
+                                //     type: "line",
+                                //     smooth: true,
+                                //     itemStyle: {
+                                //         normal: {
+                                //             areaStyle: {
+                                //                 type: "default"
+                                //             },
+                                //             color: "rgb(110, 211, 199)"
+                                //         }
+                                //     },
+                                //     data: y3
+                                // }
+                            ]
+                        };
+                        initMychart(data);
+                    });
+                    return false;
+                });
+
+                $("#queryCondition").click();
+			});
+		</script>
+
+
+		<script>
+            function getMonthKey(){
+                var now = new Date();
+                var tar = new Date()
+                var keys = [];
+                while(tar.getMonth()== now.getMonth()&&tar.getFullYear()==now.getFullYear()){
+                    now = addDay(now,-1);
+                }
+                console.log("date",now);
+            }
+            // 增加天
+            function AddDays(date,value)
+            {
+                date.setDate(date.getDate()+value);
+            }
+
+            // 增加月
+            function AddMonths(date,value)
+            {
+                date.setMonth(date.getMonth()+value);
+            }
+
+            // 增加年
+            function AddYears(date,value)
+            {
+                date.setFullYear(date.getFullYear()+value);
+            }
+
+            // 是否为今天
+            function IsToday(date)
+            {
+                return IsDateEquals(date,new Date());
+            }
+
+            // 是否为当月
+            function IsThisMonth(date1)
+            {
+                var date2 = new Date();
+                return  date1.getMonth()==date2.getMonth()&&date1.getFullYear()==date2.getFullYear();
+            }
+
+            // 两个日期的年是否相等
+            function IsMonthEquals(date1,date2)
+            {
+                return date1.getMonth()==date2.getMonth()&&date1.getFullYear()==date2.getFullYear();
+            }
+
+            // 判断日期是否相等
+            function IsDateEquals(date1,date2)
+            {
+                return date1.getDate()==date2.getDate()&&IsMonthEquals(date1,date2);
+            }
+
+            // 返回某个日期对应的月份的天数
+            function GetMonthDayCount(date)
+            {
+                switch(date.getMonth()+1)
+                {
+                    case 1:case 3:case 5:case 7:case 8:case 10:case 12:
+                    return 31;
+                    case 4:case 6:case 9:case 11:
+                    return 30;
+                }
+//feb:
+                date=new Date(date);
+                var lastd=28;
+                date.setDate(29);
+                while(date.getMonth()==1)
+                {
+                    lastd++;
+                    AddDays(date,1);
+                }
+                return lastd;
+            }
+
+            // 返回两位数的年份
+            function GetHarfYear(date)
+            {
+                var v=date.getYear();
+                if(v>9)return v.toString();
+                return "0"+v;
+            }
+
+            // 返回月份（修正为两位数）
+            function GetFullMonth(date)
+            {
+                var v=date.getMonth()+1;
+                if(v>9)return v.toString();
+                return "0"+v;
+            }
+
+            // 返回日 （修正为两位数）
+            function GetFullDate(date)
+            {
+                var v=date.getDate();
+                if(v>9)return v.toString();
+                return "0"+v;
+            }
+
+            // 替换字符串
+            function Replace(str,from,to)
+            {
+                return str.split(from).join(to);
+            }
+
+            // 格式化日期的表示
+            function FormatDate(date,str)
+            {
+                str=Replace(str,"yyyy",date.getFullYear());
+                str=Replace(str,"MM",GetFullMonth(date));
+                str=Replace(str,"dd",GetFullDate(date));
+                str=Replace(str,"yy",GetHarfYear(date));
+                str=Replace(str,"M",date.getMonth()+1);
+                str=Replace(str,"d",date.getDate());
+                return str;
+            }
+
+            // 统一日期格式
+            function ConvertDate(str)
+            {
+                str=(str+"").replace(/^\s*/g,"").replace(/\s*$/g,""); // 去除前后的空白
+                var d;
+                if(/^[0-9]{8}$/.test(str)) // 20040226 -> 2004-02-26
+                {
+                    d=new Date(new Number(str.substr(0,4)),new Number(str.substr(4,2))-1,new Number(str.substr(6,2)));
+                    if(d.getTime())return d;
+                }
+                d=new Date(str);
+                if(d.getTime())return d;
+                d=new Date(Replace(str,"-","/"));
+                if(d.getTime())return d;
+                return null;
+            }
+
+
+
+            function addDay(days,n)
+            {
+//函数说明：days日期差，n代表如下含义。
+                var my_date_ago=new Date(new Date() - days * 24 * 60 * 60 * 1000 * -1);//days天的日期
+                switch (n)
+                {
+                    case 1:
+//返回年
+                        return(my_date_ago.getFullYear());
+                        break;
+                    case 2:
+//返回月
+                        return(my_date_ago.getMonth()+1);
+                        break;
+                    case 3:
+//返回日
+                        return(my_date_ago.getDate());
+                        break;
+                    default :
+//返回全部
+                        return(my_date_ago.getFullYear() + "-" + (my_date_ago.getMonth()+1) + "-" + my_date_ago.getDate());
+                        break;
+                }
+            }
+		</script>
+	</body>
+</html>

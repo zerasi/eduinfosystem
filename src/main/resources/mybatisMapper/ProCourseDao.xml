@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.sys.dao.ProCourseDao">
+  <resultMap id="BaseResultMap" type="com.web.sys.bean.ProCourse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="score" jdbcType="DECIMAL" property="score" />
+    <result column="gettime" jdbcType="TIMESTAMP" property="gettime" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pro_course
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, name, score, gettime, user_id
+    from pro_course
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select c.*
+    from pro_course as c
+      inner join sys_user as u
+      on u.id = c.user_id
+      <where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+          <if test="username!=null and username!=''"> and (u.username like #{username,jdbcType=VARCHAR} or u.truename like #{username,jdbcType=VARCHAR})</if>
+          <if test="name!=null and name!=''"> and name = #{name,jdbcType=VARCHAR}</if>
+		<if test="score!=null "> and score = #{score,jdbcType=DECIMAL}</if>
+		<if test="gettime!=null "> and gettime = #{gettime,jdbcType=TIMESTAMP}</if>
+          <if test="userId!=null "> and user_id = #{userId,jdbcType=BIGINT}</if>
+ 	</where>
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    select id,name,score,gettime,user_id
+ 	from  pro_course 
+	<where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="name!=null and name!=''"> and name = #{name,jdbcType=VARCHAR}</if>
+		<if test="score!=null "> and score = #{score,jdbcType=DECIMAL}</if>
+		<if test="gettime!=null "> and gettime = #{gettime,jdbcType=TIMESTAMP}</if>
+		<if test="userId!=null "> and user_id = #{userId,jdbcType=BIGINT}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into pro_course (name,score,gettime,user_id)
+ values ( #{name,jdbcType=VARCHAR}, #{score,jdbcType=DECIMAL}, #{gettime,jdbcType=TIMESTAMP}, #{userId,jdbcType=BIGINT})
+  </insert>
+  <update id="update">
+    update  	pro_course 
+	<set>
+		<if test="name!=null and name!=''">name = #{name,jdbcType=VARCHAR}, </if>
+		<if test="score!=null ">score = #{score,jdbcType=DECIMAL}, </if>
+		<if test="gettime!=null ">gettime = #{gettime,jdbcType=TIMESTAMP}, </if>
+		<if test="userId!=null ">user_id = #{userId,jdbcType=BIGINT}, </if>
+ 	</set>
+	where id=#{id}
+  </update>
+</mapper>

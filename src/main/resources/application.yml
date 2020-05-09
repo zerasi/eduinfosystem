@@ -1,0 +1,60 @@
+server:
+  session-timeout: 1800
+  port: 9001
+
+spring:
+  application:
+    name: eduinfo
+  boot:
+    admin:
+      client:
+        url: http://www.jinchengwriting.com:8001
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/eduinfosystem?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=true
+    username: root
+    password: root
+  mvc:
+    dispatch-options-request: true
+    favicon:
+      enabled: false
+  thymeleaf:
+    templates_root: src/main/resources/templates/
+    cache: true
+    mode: LEGACYHTML5
+    mvc:
+      date-format: YYYY-mm-dd HH:MM:SS
+    encoding: UTF-8
+  servlet:
+    multipart:
+      max-file-size: 10Mb
+      max-request-size: 10Mb
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+
+logging:
+  file: target/log/eduinfo.log
+  level:
+    com.web.sys.*: debug
+
+
+mybatis:
+  mapper-locations: classpath:mybatisMapper/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+  type-aliases-package: com.web.sys.bean  # 注意：对应实体类的路径
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

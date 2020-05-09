@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="share/common"></div>
+</head>
+<body class="body-common">
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input type="hidden" name="id" th:value="${sys_user.id }" />
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" id="username"  maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入用户名" class="layui-input" th:value="${sys_user.username}" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">真实姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="truename" id="truename" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入真实姓名" class="layui-input" th:value="${sys_user.truename}" >
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="phone" id="phone" maxlength="16" lay-verify="required" autocomplete="off"
+                               placeholder="请输入电话" class="layui-input" th:value="${sys_user.phone}" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="email" id="email" maxlength="32" lay-verify="required" autocomplete="off"
+                               placeholder="请输入邮箱" class="layui-input" th:value="${sys_user.email}" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" id="address" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入地址" class="layui-input" th:value="${sys_user.address}" >
+                    </div>
+                </div>
+                <!--<div class="layui-form-item" pane="">-->
+                    <!--<label class="layui-form-label">性别</label>-->
+                    <!--<div class="layui-input-block">-->
+
+                            <!--<select name="sex" id="sex">-->
+                                <!--<option value="">请选择性别</option>-->
+		                                <!--<option value="0" th:selected="${sys_user.sex==0}">男</option>-->
+		                                <!--<option value="1" th:selected="${sys_user.sex==1}">女</option>-->
+                            <!--</select>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">出生日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="brithday" id="brithday" autocomplete="off" class="layui-input" lay-verify="required"
+                               th:value="${sys_user.brithday_}">
+                    </div>
+                </div>
+
+
+        <div class="layui-form-item" style="text-align: center">
+            <span th:if="${session.userAuth==null || #maps.containsKey(session.userAuth,'sysUser/save')}">
+            <button class="layui-btn" lay-submit="" lay-filter="save-data">提交</button>
+            </span>
+            <input type="button" class="layui-btn"  onclick="myback()" value="返回" />
+        </div>
+    </form>
+</div>
+<!--
+<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>-->
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['form', 'layedit', 'laydate','jquery'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
+        form.render();
+
+        var rootPath = "/";
+        var $ = this.$;
+
+            laydate.render({
+                elem: '#brithday'
+                , type: 'date'
+            });
+           laydate.render({
+               elem: '#createtime'
+               , type: 'datetime'
+           });
+           laydate.render({
+               elem: '#lastlogin'
+               , type: 'datetime'
+           });
+
+        //自定义验证规则
+        form.verify({});
+
+        //监听提交
+        form.on('submit(save-data)', function (data) {
+            data.field.itype = 1;
+            console.log(data.field)
+            $.post(rootPath+"sysUser/save",data.field,function (data) {
+                if(data.code==0){
+                    myAlert("保存成功");
+                    setTimeout(function () {
+                        myback("sysUser/gotoList");
+                    },alertTime)
+                }else{
+                    myAlert("保存失败->"+data.message)
+                }
+            });
+            return false
+        });
+
+    });
+</script>
+
+</body>
+</html>

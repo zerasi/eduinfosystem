@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="share/common"></div>
+</head>
+<body class="body-common">
+<div class="page-container">
+    <form class="layui-form layui-form-pane" action="">
+        <input readonly type="hidden" name="id" th:value="${pro_document.id }" />
+
+       
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input readonly type="text" name="name" id="name" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入名称" class="layui-input" th:value="${pro_document.name}" >
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">内容</label>
+                    <div class="layui-input-block">
+                        <input readonly type="text" name="content" id="content" maxlength="255" lay-verify="required" autocomplete="off"
+                               placeholder="请输入内容" class="layui-input" th:value="${pro_document.content}" >
+                    </div>
+                </div>
+
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">电话</label>
+            <div class="layui-input-block">
+                <input type="text" name="phone" id="phone" readonly maxlength="255" lay-verify="required" autocomplete="off"
+                       placeholder="请输入电话" class="layui-input" th:value="${pro_document.phone}" >
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">地址</label>
+            <div class="layui-input-block">
+                <input type="text" name="address" readonly id="address" maxlength="255" lay-verify="required" autocomplete="off"
+                       placeholder="请输入地址" class="layui-input" th:value="${pro_document.address}" >
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">班级</label>
+            <div class="layui-input-block">
+                <input type="text" name="tclass" id="tclass" readonly maxlength="255" lay-verify="required" autocomplete="off"
+                       placeholder="请输入班级" class="layui-input" th:value="${pro_document.tclass}" >
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">学院</label>
+            <div class="layui-input-block">
+                <input type="text" name="college" id="college" readonly maxlength="255" lay-verify="required" autocomplete="off"
+                       placeholder="请输入学院" class="layui-input" th:value="${pro_document.college}" >
+            </div>
+        </div>
+        
+                <div class="layui-form-item">
+                    <label class="layui-form-label">创建时间</label>
+                    <div class="layui-input-block">
+                        <input readonly type="text" name="createtime" id="createtime" autocomplete="off" class="layui-input" lay-verify="required"
+                               th:value="${pro_document.createtime_}">
+                    </div>
+                </div>
+        <div class="layui-form-item" style="text-align: center">
+            <input type="button" class="layui-btn"  onclick="myback()" value="返回" />
+        </div>
+    </form>
+</div>
+<!--
+<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>-->
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+                , layer = layui.layer
+                , layedit = layui.layedit
+                , laydate = layui.laydate;
+        form.render();
+
+
+           laydate.render({
+               elem: '#createtime'
+               , type: 'datetime'
+           });
+
+        //自定义验证规则
+        form.verify({});
+
+        //监听提交
+        form.on('submit(save-data)', function (data) {
+            $.post(rootPath+"proDocument/save",data.field,function (data) {
+                if(data.code==0){
+                    myAlert("保存成功");
+                    setTimeout(function () {
+                        myback("proDocument/gotoList");
+                    },alertTime)
+                }else{
+                    myAlert("保存失败->"+data.message)
+                }
+            });
+            return false
+        });
+
+    });
+</script>
+
+</body>
+</html>

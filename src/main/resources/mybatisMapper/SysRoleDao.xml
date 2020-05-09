@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.sys.dao.SysRoleDao">
+  <resultMap id="BaseResultMap" type="com.web.sys.bean.SysRole">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="num" jdbcType="BIGINT" property="num" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, name, num
+    from sys_role
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, name, num
+    from sys_role
+      <where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="name!=null and name!=''"> and name = #{name,jdbcType=VARCHAR}</if>
+		<if test="num!=null "> and num = #{num,jdbcType=BIGINT}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    select id,name,num
+ 	from  sys_role 
+	<where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="name!=null and name!=''"> and name = #{name,jdbcType=VARCHAR}</if>
+		<if test="num!=null "> and num = #{num,jdbcType=BIGINT}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into sys_role (name,num)
+ values ( #{name,jdbcType=VARCHAR}, #{num,jdbcType=BIGINT})
+  </insert>
+  <update id="update">
+    update  	sys_role 
+	<set>
+		<if test="name!=null and name!=''">name = #{name,jdbcType=VARCHAR}, </if>
+		<if test="num!=null ">num = #{num,jdbcType=BIGINT}, </if>
+ 	</set>
+	where id=#{id}
+  </update>
+</mapper>

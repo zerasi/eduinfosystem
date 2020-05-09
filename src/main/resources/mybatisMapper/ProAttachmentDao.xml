@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.sys.dao.ProAttachmentDao">
+  <resultMap id="BaseResultMap" type="com.web.sys.bean.ProAttachment">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="filename" jdbcType="VARCHAR" property="filename" />
+    <result column="uploadtime" jdbcType="TIMESTAMP" property="uploadtime" />
+    <result column="isinuse" jdbcType="SMALLINT" property="isinuse" />
+    <result column="content" jdbcType="LONGVARBINARY" property="content" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pro_attachment
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, filename, uploadtime, isinuse, content
+    from pro_attachment
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, filename, uploadtime, isinuse, content
+    from pro_attachment
+      <where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="filename!=null and filename!=''"> and filename = #{filename,jdbcType=VARCHAR}</if>
+		<if test="uploadtime!=null "> and uploadtime = #{uploadtime,jdbcType=TIMESTAMP}</if>
+		<if test="isinuse!=null "> and isinuse = #{isinuse,jdbcType=SMALLINT}</if>
+		<if test="content!=null "> and content = #{content,jdbcType=LONGVARBINARY}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    select id,filename,uploadtime,isinuse,content
+ 	from  pro_attachment 
+	<where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="filename!=null and filename!=''"> and filename = #{filename,jdbcType=VARCHAR}</if>
+		<if test="uploadtime!=null "> and uploadtime = #{uploadtime,jdbcType=TIMESTAMP}</if>
+		<if test="isinuse!=null "> and isinuse = #{isinuse,jdbcType=SMALLINT}</if>
+		<if test="content!=null "> and content = #{content,jdbcType=LONGVARBINARY}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into pro_attachment (filename,uploadtime,isinuse,content)
+ values ( #{filename,jdbcType=VARCHAR}, #{uploadtime,jdbcType=TIMESTAMP}, #{isinuse,jdbcType=SMALLINT}, #{content,jdbcType=LONGVARBINARY})
+  </insert>
+  <update id="update">
+    update  	pro_attachment 
+	<set>
+		<if test="filename!=null and filename!=''">filename = #{filename,jdbcType=VARCHAR}, </if>
+		<if test="uploadtime!=null ">uploadtime = #{uploadtime,jdbcType=TIMESTAMP}, </if>
+		<if test="isinuse!=null ">isinuse = #{isinuse,jdbcType=SMALLINT}, </if>
+		<if test="content!=null ">content = #{content,jdbcType=LONGVARBINARY}, </if>
+ 	</set>
+	where id=#{id}
+  </update>
+</mapper>

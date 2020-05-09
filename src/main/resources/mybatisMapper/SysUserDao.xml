@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.web.sys.dao.SysUserDao">
+  <resultMap id="BaseResultMap" type="com.web.sys.bean.SysUser">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="truename" jdbcType="VARCHAR" property="truename" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="photoid" jdbcType="VARCHAR" property="photoid" />
+    <result column="brithday" jdbcType="DATE" property="brithday" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="lastlogin" jdbcType="TIMESTAMP" property="lastlogin" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select id, username, truename, password, phone, email, address, sex, photoid, brithday, 
+    createtime, lastlogin,itype
+    from sys_user
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, truename, password, phone, email, address, sex, photoid, brithday, 
+    createtime, lastlogin,itype
+    from sys_user
+      <where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="username!=null and username!=''"> and username = #{username,jdbcType=VARCHAR}</if>
+		<if test="truename!=null and truename!=''"> and truename = #{truename,jdbcType=VARCHAR}</if>
+		<if test="password!=null and password!=''"> and password = #{password,jdbcType=VARCHAR}</if>
+		<if test="phone!=null and phone!=''"> and phone = #{phone,jdbcType=VARCHAR}</if>
+		<if test="email!=null and email!=''"> and email = #{email,jdbcType=VARCHAR}</if>
+		<if test="address!=null and address!=''"> and address = #{address,jdbcType=VARCHAR}</if>
+		<if test="sex!=null and sex!=''"> and sex = #{sex,jdbcType=VARCHAR}</if>
+		<if test="photoid!=null and photoid!=''"> and photoid = #{photoid,jdbcType=VARCHAR}</if>
+		<if test="brithday!=null "> and brithday = #{brithday,jdbcType=DATE}</if>
+		<if test="createtime!=null "> and createtime = #{createtime,jdbcType=TIMESTAMP}</if>
+          <if test="lastlogin!=null "> and lastlogin = #{lastlogin,jdbcType=TIMESTAMP}</if>
+          <if test="itype!=null "> and itype = #{itype,jdbcType=SMALLINT}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <select id="queryByCondition" resultMap="BaseResultMap">
+    select id,username,truename,password,phone,email,address,sex,photoid,brithday,createtime,lastlogin,itype
+ 	from  sys_user 
+	<where>
+		<if test="id!=null "> and id = #{id,jdbcType=BIGINT}</if>
+		<if test="username!=null and username!=''"> and username = #{username,jdbcType=VARCHAR}</if>
+		<if test="truename!=null and truename!=''"> and truename = #{truename,jdbcType=VARCHAR}</if>
+		<if test="password!=null and password!=''"> and password = #{password,jdbcType=VARCHAR}</if>
+		<if test="phone!=null and phone!=''"> and phone = #{phone,jdbcType=VARCHAR}</if>
+		<if test="email!=null and email!=''"> and email = #{email,jdbcType=VARCHAR}</if>
+		<if test="address!=null and address!=''"> and address = #{address,jdbcType=VARCHAR}</if>
+		<if test="sex!=null and sex!=''"> and sex = #{sex,jdbcType=VARCHAR}</if>
+		<if test="photoid!=null and photoid!=''"> and photoid = #{photoid,jdbcType=VARCHAR}</if>
+		<if test="brithday!=null "> and brithday = #{brithday,jdbcType=DATE}</if>
+		<if test="createtime!=null "> and createtime = #{createtime,jdbcType=TIMESTAMP}</if>
+        <if test="lastlogin!=null "> and lastlogin = #{lastlogin,jdbcType=TIMESTAMP}</if>
+        <if test="itype!=null "> and itype = #{itype,jdbcType=SMALLINT}</if>
+ 	</where> 
+ <if test="orderByString!=null and orderByString!=''"> 
+	 ${orderByString} 
+ </if>
+  </select>
+  <insert id="insert" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+    insert into sys_user (username,truename,password,phone,email,address,sex,photoid,brithday,createtime,lastlogin,itype)
+ values ( #{username,jdbcType=VARCHAR}, #{truename,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, #{photoid,jdbcType=VARCHAR}, #{brithday,jdbcType=DATE}, #{createtime,jdbcType=TIMESTAMP}, #{lastlogin,jdbcType=TIMESTAMP}, #{itype,jdbcType=SMALLINT})
+  </insert>
+  <update id="update">
+    update  	sys_user 
+	<set>
+		<if test="username!=null and username!=''">username = #{username,jdbcType=VARCHAR}, </if>
+		<if test="truename!=null and truename!=''">truename = #{truename,jdbcType=VARCHAR}, </if>
+		<if test="password!=null and password!=''">password = #{password,jdbcType=VARCHAR}, </if>
+		<if test="phone!=null and phone!=''">phone = #{phone,jdbcType=VARCHAR}, </if>
+		<if test="email!=null and email!=''">email = #{email,jdbcType=VARCHAR}, </if>
+		<if test="address!=null and address!=''">address = #{address,jdbcType=VARCHAR}, </if>
+		<if test="sex!=null and sex!=''">sex = #{sex,jdbcType=VARCHAR}, </if>
+		<if test="photoid!=null and photoid!=''">photoid = #{photoid,jdbcType=VARCHAR}, </if>
+		<if test="brithday!=null ">brithday = #{brithday,jdbcType=DATE}, </if>
+		<if test="createtime!=null ">createtime = #{createtime,jdbcType=TIMESTAMP}, </if>
+        <if test="lastlogin!=null ">lastlogin = #{lastlogin,jdbcType=TIMESTAMP}, </if>
+        <if test="itype!=null ">itype = #{itype,jdbcType=SMALLINT}, </if>
+ 	</set>
+	where id=#{id}
+  </update>
+</mapper>
